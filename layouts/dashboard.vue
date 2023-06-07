@@ -8,8 +8,8 @@
                     </NuxtLink>
                 </v-app-bar-title>
                 <template v-slot:append>
-                    <v-chip prepend-icon="mdi-account">Username</v-chip>
-                    <v-btn class="ml-1" size="small">Logout</v-btn>
+                    <v-chip prepend-icon="mdi-account">{{ user?.email?.split('@')[0] }}</v-chip>
+                    <v-btn :loading="loading" class="ml-1" size="small" @click="logout">Logout</v-btn>
                 </template>
             </v-app-bar>
 
@@ -20,7 +20,20 @@
     </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
+const loading = ref<boolean>(false)
+
+const logout = async () => {
+    loading.value = true
+    const {error} = await supabase.auth.signOut()
+    if(!error){
+        loading.value = false
+        return window.location.reload()
+    }
+}
+</script>
 
 <style scoped>
 .main-bx{
