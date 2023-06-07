@@ -19,12 +19,18 @@ export default defineNuxtConfig({
                 ]
             }
         ],
-        '@nuxtjs/supabase'
+        '@nuxtjs/supabase',
+        '@vueuse/nuxt',
     ],
 
     // setup env variables
     runtimeConfig: {
         SUPABASE_URL: process.env.SUPABASE_URL,
-        SUPABASE_KEY: process.env.SUPABASE_KEY
-    }
+        SUPABASE_KEY: process.env.SUPABASE_KEY,
+        public: {
+            ACCEPTED_FILE_TYPES: process.env.ACCEPTED_FILE_TYPES,
+            ACCEPTED_FILE_TYPES_CREATING: process.env.ACCEPTED_FILE_TYPES_CREATING,
+            SUPABASE_BUCKET: process.env.SUPABASE_BUCKET,
+        }
+    },
 })
