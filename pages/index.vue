@@ -24,8 +24,7 @@
 
 <script setup lang="ts">
 definePageMeta({
-    layout: false
+    layout: false,
+    middleware: ["auth"]
 })
 </script>
-
-<style scoped></style>
