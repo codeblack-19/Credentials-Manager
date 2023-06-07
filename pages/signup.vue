@@ -5,12 +5,13 @@
                 <p class="text-h4 text-center font-weight-light">Sign Up</p>
                 <p class="text-caption text-blue-darken-2 text-center mb-1">Credentials Manager</p>
                 <p v-if="error" class="text-error text-body-1 text-center">{{ error }}</p>
+                <p v-if="success" class="text-success text-body-1 text-center">{{ success }}</p>
                 <div class="mt-3">
                     <v-text-field variant="outlined" density="compact" v-model="formFields.email"
                         :rules="[rules.required, rules.valid_email]" label="Email Address" name="email_address">
                     </v-text-field>
                     <v-text-field variant="outlined" density="compact" v-model="formFields.password"
-                        label="Password" :rules="[rules.required]"
+                        label="Password" :rules="[rules.required, rules.password_length]"
                         :type="show_password ? 'text' : 'password'" name="password"></v-text-field>
                     <v-text-field variant="outlined" density="compact" v-model="formFields.confirm_password"
                         label="Confirm Password"
@@ -36,10 +37,14 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: ["auth-lg"]
+})
 const supabase = useSupabaseClient()
 
 const form = ref(false)
 const loading = ref(false)
+const success = ref("")
 const error = ref("")
 const show_password = ref<boolean>(false)
 
@@ -51,6 +56,7 @@ const formFields = ref({
 
 const rules = ref({
     required: (value: any) => !!value || "This field is Required",
+    password_length: (value: any) => value.length > 5 || "Password must > 5 characters",
     valid_email: (value: any) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value) || "Invalid Email Address",
     confirm_password: (value:any) => value == formFields.value.password || "Invalid Password"
 })
@@ -59,31 +65,17 @@ const submitForm = async () => {
     loading.value = true;
     error.value = "";
 
-    // await useFetch('/api/signup', {
-    //     method: 'POST',
-    //     body: {
-    //         ...formFields.value
-    //     },
-    //     onResponse({response}){
-    //         console.log(response._data)
-    //     }, 
-    //     onResponseError(context) {
-    //         console.log(context.response._data)
-    //     },
-    // }).finally(() => loading.value = false)
-
-    // await supabase.auth.d('5862cbe6-470b-4fbd-90f7-3dcab4a1606a').finally(() => loading.value = false)
-
-    // await supabase.auth.signUp({
-    //     email: formFields.value.email ?? "",
-    //     password: formFields.value.password ?? ""
-    // }).then((data) => {
-    //     console.log(data)
-    // }).catch((e) => {
-    //     console.log(e.message)
-    //     error.value = e.message
-    // }).finally(() => loading.value = false)
+    await useFetch('/api/signup', {
+        method: 'POST',
+        body: {
+            ...formFields.value
+        },
+        onResponse({response}){
+            success.value = "SignUp successfull, vists your mail to Verify your account"
+        }, 
+        onResponseError(context) {
+            error.value = context.error?.message ?? ""
+        },
+    }).finally(() => loading.value = false)
 }
 </script>
-
-<style scoped></style>
