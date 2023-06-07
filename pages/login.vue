@@ -26,10 +26,16 @@
 </template>
 
 <script setup lang="ts">
+
+definePageMeta({
+    middleware: ["auth-lg"]
+})
+
 const form = ref(false)
 const loading = ref(false)
 const error = ref("")
 const show_password = ref<boolean>(false)
+const supabase = useSupabaseClient()
 
 const formFields = ref({
     email: null,
@@ -42,9 +48,23 @@ const rules = ref({
 })
 
 const submitForm = async () => {
+    loading.value = true
 
+    const { data, error: authError } =  await supabase.auth.signInWithPassword({
+        email: formFields.value.email ?? "",
+        password: formFields.value.password ?? ""
+    })
+
+    if(authError){
+        error.value = authError.message
+    }
+
+    if(data){
+        setTimeout(() => {
+            loading.value = false
+            window.location.href =  '/'
+        }, 2000)
+    }
 }
 
 </script>
-
-<style scoped></style>
