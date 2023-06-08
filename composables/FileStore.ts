@@ -10,6 +10,7 @@ export const useFileStore = definePiniaStore("fileStore", () => {
   const requestFiles = ref<FileRequestType[]>();
   const public_files = ref<FileTypes[]>();
   const loading = ref<boolean>(false)
+  const approvedRequestedFiles = ref<FileRequestType[]>();
 
   const getUserFiles = async () => {
     const { data } = await supabase
@@ -67,6 +68,17 @@ export const useFileStore = definePiniaStore("fileStore", () => {
     requestFiles.value =  data ?? [];
   }
 
+  const getUserApprovedFiles = async () => {
+    const { data } = await supabase
+      .from("file_requests")
+      .select("*, files(*)")
+      .eq("accessor_uid", user.value?.id)
+      .eq("approved", true)
+      .order("id", { ascending: false })
+
+    approvedRequestedFiles.value =  data ?? [];
+  }
+  
   return {
     loading,
     files,
@@ -74,11 +86,13 @@ export const useFileStore = definePiniaStore("fileStore", () => {
     previewUriToken,
     requestFiles,
     public_files,
+    approvedRequestedFiles,
     getUserFiles,
     setPreviewUriToken,
     getOtherUserFiles,
     getRequestedFile,
     getOneFile,
     getRequestedFiles,
+    getUserApprovedFiles
   };
 });
