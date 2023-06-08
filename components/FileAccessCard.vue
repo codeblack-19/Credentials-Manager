@@ -13,7 +13,7 @@
     >
       <div class="text-body-2">
         You Requested access for file -
-        <span class="text-blue-darken-2 mr-2">{{ file?.title }}</span> |
+        <span class="text-blue-darken-2 mr-2">{{ file?.title }}</span>
         <v-chip v-if="!req?.approved" :color="req?.approved ? 'success' : 'warning'" size="x-small">{{ req?.approved ? `Approved` : `Pending` }}</v-chip>
         <span v-else>Secrete Code - <v-chip color="blue-darken-2" size="x-small">{{ file?.secret_code }}</v-chip></span>
       </div>
