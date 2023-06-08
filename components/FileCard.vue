@@ -10,7 +10,7 @@
         @click="dialog = true"
       >
         <div class="d-flex flex-wrap justify-space-between align-center">
-          <p class="text-body-1 font-weight-medium mx-1">
+          <p class="text-body-2 font-weight-medium mx-1">
             {{ file?.title }}
           </p>
           <v-chip
@@ -21,7 +21,7 @@
             >{{ file?.visibility }}</v-chip
           >
           <v-spacer></v-spacer>
-          <p class="text-caption text-right text-blue-darken-3 font-italic">
+          <p class="text-caption ms-auto text-right text-blue-darken-3 font-italic">
             {{ useTimeAgo(new Date(file?.created_at)).value }}
           </p>
         </div>
@@ -37,7 +37,7 @@
               icon="mdi-window-close"
             />
           </div>
-          <div class="px-5 text-center">
+          <div v-if="user?.id === file?.creator_uid || access?.approved" class="px-5 text-center">
             <p class="text-center font-weight-medium text-subtitle-1">
               Please enter the secret code for this file
             </p>
@@ -60,6 +60,7 @@
               >Access</v-btn
             >
           </div>
+          <RequestAccess v-else :file="file" v-model:access="access" />
         </v-card>
       </v-dialog>
     </client-only>
@@ -68,15 +69,19 @@
 
 <script setup lang="ts">
 import FileTypes from "~/types/fileType";
+import FileRequestType from "~/types/fileRequestType"
+
 const props = defineProps<{
   file?: FileTypes;
 }>();
 
 const alertStore = useAlertStore();
+const user = useSupabaseUser();
 const fileStore = useFileStore();
 
 const dialog = ref<boolean>(false);
 const secretCode = ref("");
+const access = ref<FileRequestType | null>(null)
 
 const accesFile = async () => {
   alertStore.clear();
@@ -93,4 +98,22 @@ const closeDialog = () => {
   secretCode.value = "";
   dialog.value = false;
 };
+
+const fetchRequestedFile = async () => {
+  access.value = await fileStore.getRequestedFile(props.file?.id ?? 0)
+}
+
+const Interval = setInterval(() => {
+  (async () => {
+    await fetchRequestedFile()
+  })()
+}, 10000)
+
+onBeforeMount(async() => {
+  await fetchRequestedFile()
+})
+
+onBeforeUnmount(() => {
+  clearInterval(Interval)
+})
 </script>
