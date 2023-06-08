@@ -131,7 +131,7 @@ const save_user_file = async (file_url: string) => {
     alertStore.error = err.message
   }else{
     alertStore.success = "File saved successfully"
-    await fileStore.getFiles()
+    await fileStore.getUserFiles()
     setTimeout(() => {
       closeDialog()
     }, 500)
