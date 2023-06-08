@@ -4,8 +4,7 @@
             <v-form v-model="form" @submit.prevent="submitForm">
                 <p class="text-h4 text-center font-weight-light">Sign Up</p>
                 <p class="text-caption text-blue-darken-2 text-center mb-1">Credentials Manager</p>
-                <p v-if="error" class="text-error text-body-1 text-center">{{ error }}</p>
-                <p v-if="success" class="text-success text-body-1 text-center">{{ success }}</p>
+                <FormAlert />
                 <div class="mt-3">
                     <v-text-field variant="outlined" density="compact" v-model="formFields.email"
                         :rules="[rules.required, rules.valid_email]" label="Email Address" name="email_address">
@@ -40,12 +39,10 @@
 definePageMeta({
     middleware: ["auth-lg"]
 })
-const supabase = useSupabaseClient()
+const alertStore = useAlertStore()
 
 const form = ref(false)
 const loading = ref(false)
-const success = ref("")
-const error = ref("")
 const show_password = ref<boolean>(false)
 
 const formFields = ref({
@@ -63,19 +60,19 @@ const rules = ref({
 
 const submitForm = async () => {
     loading.value = true;
-    error.value = "";
+    alertStore.clear()
 
-    await useFetch('/api/signup', {
+    const { error } =  await useFetch('/api/signup', {
         method: 'POST',
         body: {
             ...formFields.value
-        },
-        onResponse({response}){
-            success.value = "SignUp successfull, vists your mail to Verify your account"
-        }, 
-        onResponseError(context) {
-            error.value = context.error?.message ?? ""
-        },
+        }
     }).finally(() => loading.value = false)
+
+    if(error.value?.message){
+        alertStore.error = error.value.data.message
+    }else{
+        alertStore.success = "SignUp successfull, vists your mail to Verify your account"
+    }
 }
 </script>

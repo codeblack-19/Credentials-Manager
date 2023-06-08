@@ -4,7 +4,7 @@
             <v-form v-model="form" @submit.prevent="submitForm">
                 <p class="text-h4 text-center font-weight-light">Login</p>
                 <p class="text-caption text-blue-darken-2 text-center mb-1">Credentials Manager</p>
-                <p v-if="error" class="text-error text-body-1 text-center">{{ error }}</p>
+                <FormAlert />
                 <div class="mt-3">
                     <v-text-field variant="outlined" density="compact" v-model="formFields.email"
                         :rules="[rules.required, rules.valid_email]" label="Email Address" name="email_address">
@@ -31,9 +31,9 @@ definePageMeta({
     middleware: ["auth-lg"]
 })
 
+const alertStore = useAlertStore()
 const form = ref(false)
 const loading = ref(false)
-const error = ref("")
 const show_password = ref<boolean>(false)
 const supabase = useSupabaseClient()
 
@@ -49,22 +49,22 @@ const rules = ref({
 
 const submitForm = async () => {
     loading.value = true
+    alertStore.clear()
 
-    const { data, error: authError } =  await supabase.auth.signInWithPassword({
+    const { error: authError } =  await supabase.auth.signInWithPassword({
         email: formFields.value.email ?? "",
         password: formFields.value.password ?? ""
-    })
+    }).finally(() => loading.value = false)
 
     if(authError){
-        error.value = authError.message
+        alertStore.error = authError.message
+    }else{
+        alertStore.success = "Logged in successfully"
+        setTimeout(() => {
+            window.location.href =  '/'
+        }, 1000)
     }
 
-    if(data){
-        setTimeout(() => {
-            loading.value = false
-            window.location.href =  '/'
-        }, 2000)
-    }
 }
 
 </script>
