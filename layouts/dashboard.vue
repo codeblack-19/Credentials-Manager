@@ -17,12 +17,14 @@
           </NuxtLink>
         </v-app-bar-title>
         <template v-slot:append>
+          <ClientOnly>
+            <RequestsRequestDialog />
+          </ClientOnly>
           <v-chip @click="navigateTo('/profile')" prepend-icon="mdi-account">{{
             user?.email?.split("@")[0]
           }}</v-chip>
           <v-btn :loading="loading" class="ml-1" size="small" @click="logout"
-            >Logout</v-btn
-          >
+            >Logout</v-btn>
         </template>
       </v-app-bar>
 
