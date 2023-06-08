@@ -29,7 +29,7 @@ export default defineNuxtConfig({
         SUPABASE_KEY: process.env.SUPABASE_KEY,
         public: {
             ACCEPTED_FILE_TYPES: process.env.ACCEPTED_FILE_TYPES,
-            ACCEPTED_FILE_TYPES_CREATING: process.env.ACCEPTED_FILE_TYPES_CREATING,
+            ACCEPTED_FILE_TYPES_CREATING: [".csv", ".txt", ".xlsx", ".docx", ".doc", ".odt"],
             SUPABASE_BUCKET: process.env.SUPABASE_BUCKET,
         }
     },
