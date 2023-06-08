@@ -3,7 +3,7 @@
     <v-sheet max-height="85vh" class="pa-3" rounded>
       <div class="d-flex justify-space-between align-center mb-2">
         <p class="text-h5 font-weight-light">
-          My files <v-icon icon="mdi-file-document-outline" class="ml-2" />
+          My files <v-icon icon="mdi-file-document-outline" size="small" class="ml-2" />
         </p>
         <CreateFileDropDown />
       </div>
@@ -22,8 +22,4 @@
 
 <script setup lang="ts">
 const fileStore = useFileStore();
-
-onBeforeMount(async () => {
-  await fileStore.getFiles();
-});
 </script>
