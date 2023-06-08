@@ -1,6 +1,27 @@
-# Nuxt 3 Minimal Starter
+# Credentials Manager
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This is a client-side application which manages the creation, storage, retrieval, and deletion of user specific files and records.
+
+## Essentials
+
+1. Create a **Supabase** account.
+2. Create a .env file with the following variables
+
+```.env
+SUPABASE_URL=[Your Supabase api url]
+SUPABASE_KEY=[Your Supabase Anon key]
+SUPABASE_BUCKET=[Your supabase storage bucket]
+
+DIRECT_URL="postgresql://postgres:[Your Supabase db password]@db.[Your Supabase Id].supabase.co:5432/postgres"
+DATABASE_URL="postgres://postgres:[Your Supabase db password]@db.[Your Supabase ID].supabase.co:6543/postgres?pgbouncer=true"
+
+ACCEPTED_FILE_TYPES = ".csv, .txt, .xlsx, .docs, .doc, .odt, .pdf, .jpg, .jpeg, .png, .mp3"
+```
+3. Run the following command to setup the Supabase database
+```bash
+npx prisma db push
+```
+<br />
 
 ## Setup
 
@@ -16,6 +37,8 @@ npm install
 # pnpm
 pnpm install
 ```
+
+
 
 ## Development Server
 
