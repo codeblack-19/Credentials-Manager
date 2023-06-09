@@ -48,7 +48,7 @@ const logout = async () => {
   const { error } = await supabase.auth.signOut();
   if (!error) {
     loading.value = false;
-    return window.location.reload();
+    return window.location.href = "/login";
   }
 };
 </script>
