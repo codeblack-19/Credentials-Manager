@@ -9,7 +9,7 @@
                     <v-col cols="12" md="4">
                         <v-row>
                             <v-col cols="12">
-                                <DashboardRequestFiles/>
+                                <DashboardApprovedFiles />
                             </v-col>
                             <v-col cols="12">
                                 <DashboardPublicFiles />
@@ -35,12 +35,14 @@ const fetchAllFileContents = async () => {
     await fileStore.getUserFiles()
     await fileStore.getRequestedFiles()
     await fileStore.getOtherUserFiles()
+    await fileStore.getUserApprovedFiles()
     fileStore.loading = false
 }
 
 const Interval = setInterval(() => {
     (async () => {
         await fetchAllFileContents()
+        console.clear()
     })()
 }, 10000)
 
